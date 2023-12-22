@@ -44,7 +44,6 @@ class Hears{
         })
         app.hears("Start testing", async(ctx) => {
             ctx.replyWithMarkdown(`*start 🚀*`, stop_button)
-            // console.log(this.#randomQuestions);
             await this.findVariants(ctx, this.#page, app);
             
 
@@ -52,8 +51,10 @@ class Hears{
     }
 
         ShowTests(){
+            this.#randomQuestions = [];
+             const randomNumbers = uniqueRandomNumbers(20, 1, 100);
             sqlService.getAllQuestions().then(data => {
-                uniqueRandomNumbers.forEach(element => {
+                randomNumbers.forEach(element => {
                     data.rows.forEach(row => {
                         if(row.id == element){
                             this.#randomQuestions.push(row)
@@ -107,82 +108,132 @@ class Hears{
                 [Markup.button.callback(`D: ${D.variant_text}`, `${D.id}`)]
             ])
         
+///__________Tere will be Constructor Variant _____________///
+// const AllVariants = new VariantsClass(app, A, this.#randomQuestions, this.#message_id, this.#answer_id, pagethis.#result, this.#page);
+// AllVariants.allVariants();
+
+
+
+
             app.action(`${A.id}`, async(ctx) => {
                 if(A.correct  == "false"){
-                    this.#answer_id = ctx.reply("Wrong answer 🙅‍♂️")
+                    ctx.reply("Wrong answer 🙅‍♂️").then(i => {
+                        this.#answer_id =  i.message_id;
+                         setTimeout(async (e) => {
+                            await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
+                                console.log("Deletde error: ", err, i.message_id);
+                            })
+                        } , 2000)
+                    })
                 }else{
                     this.#result++
-                    this.#answer_id = ctx.reply("Correct answer ✅")
+                    ctx.reply("Correct answer ✅").then(i => {
+                        this.#answer_id =  i.message_id;
+                        setTimeout(async (e) => {
+                            await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
+                                console.log("Deletde error: ", err, i.message_id);
+                            })
+                        } , 2000)
+                    })
                 }
-                this.#page++
-                await this.deleteMassage(ctx, this.#message_id);
-                setTimeout(async (e) => {
-                    await this.deleteAnswer(ctx)
-                } , 2000)
+                    this.#page++
+                    await this.deleteMassage(ctx, this.#message_id);
+                    if(this.#page > 20){
+                        this.resultRespons(ctx);
+                    }else{
+                        await this.findVariants(ctx, this.#page, app)  
+                    }
+                }) 
 
-                if(this.#page > 20){
-                    this.resultRespons(ctx);
-                }else{
-                    await this.findVariants(ctx, this.#page, app)  
-                }
-            }) 
+                app.action(`${B.id}`, async(ctx) => {
+                    if(B.correct  == "false"){
+                        ctx.reply("Wrong answer 🙅‍♂️").then(i => {
+                            this.#answer_id =  i.message_id;
+                             setTimeout(async (e) => {
+                                await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
+                                    console.log("Deletde error: ", err, i.message_id);
+                                })
+                            } , 2000)
+                        })
+                    }else{
+                        this.#result++
+                        ctx.reply("Correct answer ✅").then(i => {
+                            this.#answer_id =  i.message_id;
+                            setTimeout(async (e) => {
+                                await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
+                                    console.log("Deletde error: ", err, i.message_id);
+                                })
+                            } , 2000)
+                        })
+                    }
+                        this.#page++
+                        await this.deleteMassage(ctx, this.#message_id);
+                        if(this.#page > 20){
+                            this.resultRespons(ctx);
+                        }else{
+                            await this.findVariants(ctx, this.#page, app)  
+                        }
+                    }) 
 
-            app.action(`${B.id}`, async ctx => {
-                if(B.correct == "false"){
-                    this.#answer_id = ctx.reply("Wrong answer 🙅‍♂️")
-                }else{
-                    this.#result++
-                    this.#answer_id = ctx.reply("Correct answer ✅")
-                }
-                this.#page++
-                await this.deleteMassage(ctx, this.#message_id);
-                setTimeout(async (e) => {
-                    await this.deleteAnswer(ctx)
-                } , 2000)
-                if(this.#page > 20){
-                    this.resultRespons(ctx);
-                }else{
-                    await this.findVariants(ctx, this.#page, app)  
-                }
-            }) 
+                    app.action(`${C.id}`, async(ctx) => {
+                        if(C.correct  == "false"){
+                            ctx.reply("Wrong answer 🙅‍♂️").then(i => {
+                                this.#answer_id =  i.message_id;
+                                 setTimeout(async (e) => {
+                                    await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
+                                        console.log("Deletde error: ", err, i.message_id);
+                                    })
+                                } , 2000)
+                            })
+                        }else{
+                            this.#result++
+                            ctx.reply("Correct answer ✅").then(i => {
+                                this.#answer_id =  i.message_id;
+                                setTimeout(async (e) => {
+                                    await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
+                                        console.log("Deletde error: ", err, i.message_id);
+                                    })
+                                } , 2000)
+                            })
+                        }
+                            this.#page++
+                            await this.deleteMassage(ctx, this.#message_id);
+                            if(this.#page > 20){
+                                this.resultRespons(ctx);
+                            }else{
+                                await this.findVariants(ctx, this.#page, app)  
+                            }
+                        }) 
 
-            app.action(`${C.id}`, async ctx => {
-                if(C.correct == "false"){
-                    this.#answer_id = ctx.reply("Wrong answer 🙅‍♂️")
-                }else{
-                    this.#result++
-                    this.#answer_id = ctx.reply("Correct answer ✅")
-                }
-                this.#page++
-                await this.deleteMassage(ctx, this.#message_id);
-                setTimeout(async(e) => {
-                    await this.deleteAnswer(ctx)
-                } , 2000)
-                if(this.#page > 20){
-                    this.resultRespons(ctx);
-                }else{
-                    await this.findVariants(ctx, this.#page, app)  
-                }
-            }) 
-
-            app.action(`${D.id}`, async ctx => {
-                if(D.correct == "false"){
-                    this.#answer_id = ctx.reply("Wrong answer 🙅‍♂️")
-                }else{
-                    this.#result++
-                    this.#answer_id = ctx.reply("Correct answer ✅")
-                }
-                this.#page++
-                await this.deleteMassage(ctx, this.#message_id);
-                setTimeout(async(e) => {
-                    await this.deleteAnswer(ctx)
-                } , 2000)
-                if(this.#page > 20){
-                    this.resultRespons(ctx);
-                }else{
-                    await this.findVariants(ctx, this.#page, app)  
-                }
-            }) 
+                        app.action(`${D.id}`, async(ctx) => {
+                            if(D.correct  == "false"){
+                                ctx.reply("Wrong answer 🙅‍♂️").then(i => {
+                                    this.#answer_id =  i.message_id;
+                                     setTimeout(async (e) => {
+                                        await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
+                                            console.log("Deletde error: ", err, i.message_id);
+                                        })
+                                    } , 2000)
+                                })
+                            }else{
+                                this.#result++
+                                ctx.reply("Correct answer ✅").then(i => {
+                                    this.#answer_id =  i.message_id;
+                                    setTimeout(async (e) => {
+                                        await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
+                                            console.log("Deletde error: ", err, i.message_id);
+                                        })
+                                    } , 2000)
+                                })
+                            }
+                                this.#page++
+                                await this.deleteMassage(ctx, this.#message_id);
+                                if(this.#page > 20){
+                                    this.resultRespons(ctx);
+                                }else{
+                                    await this.findVariants(ctx, this.#page, app)  
+                                }
+                            }) 
 
 
             return button;
@@ -196,30 +247,43 @@ class Hears{
             })
         }
 
-        async deleteAnswer( ctx){
-            await this.#answer_id.then(async i => {
-                await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
-                    console.log("Deletde error: ", err, i.message_id);
-                })
-            })
-        }
 
         async resultRespons(ctx){
             const result = this.#result;
             if(result >= 15){
-                ctx.replyWithMarkdown(`Test completed, You result ${result} 🟢 *Very good* 👍`)
+                ctx.replyWithMarkdown(`Test completed, Your result ${result} 🟢 *Very good* 👍`)
+                this.#randomQuestions = [];
+                    this.#message_id = ""
+                    this.#answer_id = "";
+                    this.#page = 1;
+                    this.#result = 0;
                 return;
             }
             else if(result >= 10){
-                ctx.replyWithMarkdown(`Test completed, You result ${result} 🟡 *Not bad* 🙂`)
+                ctx.replyWithMarkdown(`Test completed, Your result ${result} 🟡 *Not bad* 🙂`)
+                this.#randomQuestions = [];
+                    this.#message_id = ""
+                    this.#answer_id = "";
+                    this.#page = 1;
+                    this.#result = 0;
                 return;
             }
             else if(result < 10){
-                ctx.replyWithMarkdown(`Test completed, You result ${result} 🔴 *You should learn more* 😔`)
+                ctx.replyWithMarkdown(`Test completed, Your result ${result} 🔴 *You should learn more* 😔`)
+                this.#randomQuestions = [];
+                    this.#message_id = ""
+                    this.#answer_id = "";
+                    this.#page = 1;
+                    this.#result = 0;
                 return;
             }
             else{
                 ctx.reply("Finished")
+                this.#randomQuestions = [];
+                    this.#message_id = ""
+                    this.#answer_id = "";
+                    this.#page = 1;
+                    this.#result = 0;
                 return;
             }
         }

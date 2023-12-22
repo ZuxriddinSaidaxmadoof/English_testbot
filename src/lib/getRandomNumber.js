@@ -1,4 +1,4 @@
-function getRandomNumbers(count, min, max) {
+function uniqueRandomNumbers(count, min, max) {
     if (count > max - min + 1 || count < 0) {
       throw new Error("Invalid range or count");
     }
@@ -13,8 +13,6 @@ function getRandomNumbers(count, min, max) {
   
     return result;
   }
-  
-  const uniqueRandomNumbers = getRandomNumbers(20, 1, 100);
   
 
   module.exports = {uniqueRandomNumbers};
