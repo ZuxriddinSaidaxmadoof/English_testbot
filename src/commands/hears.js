@@ -2,7 +2,6 @@ const {SqlService} = require("../lib/sql_service.js")
 const sqlService = new SqlService();
 const {uniqueRandomNumbers} = require("../lib/getRandomNumber.js")
 const {Markup} = require("telegraf")
-// const {VariantsClass} = require("../lib/hears.variantClass.js");
 
 
 const reply_buttons = {
@@ -31,7 +30,6 @@ const stop_button = {
 class Hears{
  #randomQuestions = [];
  #message_id;
- #answer_id;
  #page = 1;
  #result = 0;
 
@@ -52,7 +50,10 @@ class Hears{
 
         ShowTests(){
             this.#randomQuestions = [];
+
+            // this function bring 20 random numbers from 1 to 100
              const randomNumbers = uniqueRandomNumbers(20, 1, 100);
+
             sqlService.getAllQuestions().then(data => {
                 randomNumbers.forEach(element => {
                     data.rows.forEach(row => {
@@ -68,7 +69,7 @@ class Hears{
 
 
         }
-///////////______________pending_______________///////////
+        
         findVariants(ctx, page, app){
 
             sqlService.getAllVariants().then(data => {
@@ -85,19 +86,16 @@ class Hears{
                     app,
                     ctx
                 );
-///// there will be check to 20 questions
                 const messageFindId = ctx.replyWithMarkdown(`
                 _${this.#page}/20_
 *${page}.* ${this.#randomQuestions[page -1].title}?`, variantButtons)
                 messageFindId.then(m => {
                     this.#message_id = m.message_id; 
-                    // console.log("message id:",this.#message_id);
                 })
             })
         }
 
 
-///////////______________pending_______________///////////
 
 
         makeVariantBurron(A, B, C, D, app, ctx){
@@ -108,11 +106,6 @@ class Hears{
                 [Markup.button.callback(`D: ${D.variant_text}`, `${D.id}`)]
             ])
         
-///__________Tere will be Constructor Variant _____________///
-// const AllVariants = new VariantsClass(app, A, this.#randomQuestions, this.#message_id, this.#answer_id, pagethis.#result, this.#page);
-// AllVariants.allVariants();
-
-
 
 
             app.action(`${A.id}`, async(ctx) => {
