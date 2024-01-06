@@ -2,6 +2,7 @@ const {SqlService} = require("../lib/sql_service.js")
 const sqlService = new SqlService();
 const {uniqueRandomNumbers} = require("../lib/getRandomNumber.js")
 const {Markup} = require("telegraf")
+const {reply_button} = require("../commands/start.js")
 
 
 const reply_buttons = {
@@ -69,7 +70,7 @@ class Hears{
 
 
         }
-        
+
         findVariants(ctx, page, app){
 
             sqlService.getAllVariants().then(data => {
@@ -97,7 +98,6 @@ class Hears{
 
 
 
-
         makeVariantBurron(A, B, C, D, app, ctx){
             const button = Markup.inlineKeyboard([
                 [Markup.button.callback(`A: ${A.variant_text}`, `${A.id}`)],
@@ -106,12 +106,15 @@ class Hears{
                 [Markup.button.callback(`D: ${D.variant_text}`, `${D.id}`)]
             ])
         
-
+            app.hears("Stop", (ctx) => {
+                this.#page = 1;
+                ctx.reply("Stoped", reply_button);
+                
+            })
 
             app.action(`${A.id}`, async(ctx) => {
                 if(A.correct  == "false"){
                     ctx.reply("Wrong answer 🙅‍♂️").then(i => {
-                        this.#answer_id =  i.message_id;
                          setTimeout(async (e) => {
                             await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
                                 console.log("Deletde error: ", err, i.message_id);
@@ -121,7 +124,6 @@ class Hears{
                 }else{
                     this.#result++
                     ctx.reply("Correct answer ✅").then(i => {
-                        this.#answer_id =  i.message_id;
                         setTimeout(async (e) => {
                             await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
                                 console.log("Deletde error: ", err, i.message_id);
@@ -141,7 +143,6 @@ class Hears{
                 app.action(`${B.id}`, async(ctx) => {
                     if(B.correct  == "false"){
                         ctx.reply("Wrong answer 🙅‍♂️").then(i => {
-                            this.#answer_id =  i.message_id;
                              setTimeout(async (e) => {
                                 await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
                                     console.log("Deletde error: ", err, i.message_id);
@@ -151,7 +152,6 @@ class Hears{
                     }else{
                         this.#result++
                         ctx.reply("Correct answer ✅").then(i => {
-                            this.#answer_id =  i.message_id;
                             setTimeout(async (e) => {
                                 await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
                                     console.log("Deletde error: ", err, i.message_id);
@@ -171,7 +171,6 @@ class Hears{
                     app.action(`${C.id}`, async(ctx) => {
                         if(C.correct  == "false"){
                             ctx.reply("Wrong answer 🙅‍♂️").then(i => {
-                                this.#answer_id =  i.message_id;
                                  setTimeout(async (e) => {
                                     await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
                                         console.log("Deletde error: ", err, i.message_id);
@@ -181,7 +180,6 @@ class Hears{
                         }else{
                             this.#result++
                             ctx.reply("Correct answer ✅").then(i => {
-                                this.#answer_id =  i.message_id;
                                 setTimeout(async (e) => {
                                     await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
                                         console.log("Deletde error: ", err, i.message_id);
@@ -201,7 +199,6 @@ class Hears{
                         app.action(`${D.id}`, async(ctx) => {
                             if(D.correct  == "false"){
                                 ctx.reply("Wrong answer 🙅‍♂️").then(i => {
-                                    this.#answer_id =  i.message_id;
                                      setTimeout(async (e) => {
                                         await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
                                             console.log("Deletde error: ", err, i.message_id);
@@ -211,7 +208,6 @@ class Hears{
                             }else{
                                 this.#result++
                                 ctx.reply("Correct answer ✅").then(i => {
-                                    this.#answer_id =  i.message_id;
                                     setTimeout(async (e) => {
                                         await ctx.telegram.deleteMessage(ctx.chat.id, i.message_id).then().catch(err => {
                                             console.log("Deletde error: ", err, i.message_id);
@@ -231,7 +227,7 @@ class Hears{
 
             return button;
         }
-
+        
 
 
         async deleteMassage(ctx, messageId){
@@ -247,7 +243,6 @@ class Hears{
                 ctx.replyWithMarkdown(`Test completed, Your result ${result} 🟢 *Very good* 👍`)
                 this.#randomQuestions = [];
                     this.#message_id = ""
-                    this.#answer_id = "";
                     this.#page = 1;
                     this.#result = 0;
                 return;
@@ -256,7 +251,6 @@ class Hears{
                 ctx.replyWithMarkdown(`Test completed, Your result ${result} 🟡 *Not bad* 🙂`)
                 this.#randomQuestions = [];
                     this.#message_id = ""
-                    this.#answer_id = "";
                     this.#page = 1;
                     this.#result = 0;
                 return;
@@ -265,7 +259,6 @@ class Hears{
                 ctx.replyWithMarkdown(`Test completed, Your result ${result} 🔴 *You should learn more* 😔`)
                 this.#randomQuestions = [];
                     this.#message_id = ""
-                    this.#answer_id = "";
                     this.#page = 1;
                     this.#result = 0;
                 return;
@@ -274,7 +267,6 @@ class Hears{
                 ctx.reply("Finished")
                 this.#randomQuestions = [];
                     this.#message_id = ""
-                    this.#answer_id = "";
                     this.#page = 1;
                     this.#result = 0;
                 return;

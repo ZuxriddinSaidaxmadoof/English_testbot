@@ -9,7 +9,8 @@ const reply_button = {
         keyboard: [
             [{text: "Tests 🎯"}, {text: "Learning 🧑‍🎓"}],
             [{text: "About"}, {text: "Help"}],
-            [{text: "My statistic 🚀"}]
+            [{text: "My statistic 🚀"}],
+            [{text: "Get sertification"}]
         ],
         resize_keyboard: true
     }
@@ -28,6 +29,7 @@ async function startCommand(ctx){
     await service.createNewUser(newUser)
     .then((data) => {
         ctx.reply(`Welcome ${ctx.from.first_name} to the bot which can Find out your English level 🇺🇸`, reply_button);
+        
     })
     .catch(err => {
         ctx.reply(`Welcome back ${ctx.from.first_name}, determine your level of English  🇺🇸`, reply_button);
@@ -36,6 +38,6 @@ async function startCommand(ctx){
 
 }
 
-module.exports = {startCommand};
+module.exports = {startCommand, reply_button};
 
 

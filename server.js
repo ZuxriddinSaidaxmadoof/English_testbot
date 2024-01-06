@@ -5,20 +5,15 @@ const {telegram_api} = require("./config/config.js")
 const {Telegraf} = require("telegraf")
 const app = new Telegraf(telegram_api)
 
-//-----------Test-----------//
-
-
-
-
-
-
-//-----------Test-----------//
 
 const AllHears = new Hears()
 
 app.start(async(ctx) => {
     startCommand(ctx)
 })
+
+
+
 try{
     AllHears.HearTestStart(app);
 }catch(err){
